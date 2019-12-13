@@ -1,0 +1,105 @@
+Gitlet Design Document
+----------------------
+
+Classes and Data Structures
+---------------------------
+** Blob **
+Has:
+String name - the name of the file
+String word - the  contents
+String hash - the hash string
+
+** Commit **
+contents - a HashMap of all the contents
+
+** Gitlet **
+ArrayList untracked - files that are untracked for the current round of stage
+Set tracked - tracked files for this round of commit
+ArrayList branches - all the branches that we are keeping track of
+ArrayList commits - the hash values of all the commits
+HashMap branchHeads - the heads of all the branches (redundant to have branches)
+HashMap remoterepos - all the remoterepo names and the locations
+
+
+
+
+Algorithms
+----------
+** Blob **
+getName() - gets the name of the file
+getSContents() - gets the name as a string
+getBContents() - gets the file as byte array
+getHash() - gets the hash function
+
+** Commit **
+There are three different ways of initializing the
+commit class, either inital commit, merge commit or
+a regular commit
+hashval() - generates and retrieves the hash value
+gethash() - gets the hash value
+getbranch() - gets the value of the branch
+getMessage() - gets the message associated with the message
+getTime() gets the time of the message
+getParent() - gets the parent of the commit
+getSParent() - gets the second parent (if any)
+getBlobs() gets all the blobs of the commit (hash values)
+getContents() gets the entire thing
+
+** Gitlet **
+run - runs the various functions that Gitlet possesses
+firstgroupfunc - a hlper function to run that contains a smaller subset of commands
+secongroupfunc - a helper functon to run that contains a smaller subset of commands
+thirdgroupfunc - a helper function to run that contains a smaller subset of commands
+init - this initializes the gitlet directory and is used by firstgroupfunc
+add - this stages a file to the staging area, and is helped along with the
+stage object under the name staged.
+remove - removes the file from the staging area and even remove it from the directory
+if it was tracked
+commit - creates a commit object from the variables passed, staging area and the tracked array
+list and then adds this to the relevant data structures and such
+log - displays the ancestry of the current commit essentially
+globall - called by secondgroupfunc and shows all the commits
+find - will find a commit based on a message
+status - will print out the entire status including the modifications, the names, etc
+checkout - this mimcs the functionality of the checkout with a file name and the name of a commit
+and it involves checking to see if the length of the string is 40 characters or not and than finding the
+relevant commit and checking out the file
+checkoutn - this just calls the above function but automatically choses the current commit as the relevant one
+checkoutb - this calls an entire branch head to be checked out and uses a similar strategy to reset to
+help the function.
+branch - this creates a new branch, but specifically does so by adding a variable to the brancHeads data
+structure and the branches array
+removebranch - this is the opposite of the add branch and will take away a branch if is exists where it needs
+to be
+reset - the implementation for this is identical to checkout branch, with the exception that it also changes
+the current branch head
+reaffirm - this is recursive function meant to help us with creating our merge function. It is used by itself
+and by ancestorlocator to traverse branches and works in conjuction with the global variables globalances and lowest
+ancestorlocator - this returns a boolean and is meant to help us with the location of ancestor. It just passes
+information to multiple reaffirms
+merge - this hefty function is meant to deal with merge function, and combining two branches into a new commit
+gethead() - this returns the head of the current gitlet
+addcommit - this helps us add commits to the relevant branch from a location, specifically to help us
+with remote functions
+addremote - this changes the forward slashes of a name to a certain name and then it also stores a certain
+remote inside of a remoterepos datastructure
+removeremote - this does the opposite of addremote and yeets a fucker out of that shit
+push - this will check to see if the head of the commit exists in a certain remote repo and then push
+the associated commits to that remoterepo using the addcommit function
+fetch - this retrieves the information from the passed remoterepo and adds it to its own branch or just simply
+will fast forward the branch that already exists
+pull - this literally just calls fetch and then merge on the relevant files
+Persistence
+-----------
+.gitlet doesn't have any internal data structure to it; it simply contains everything there is to contain
+    Thus there is no difference between the commits and the blobs that we have with the only noticeable difference
+    being the fact that the actual gitlet class is named gitlet and is always stored as such
+ We need a variety of files from commit to commit, in particular we need the staging area, the gitlet object
+ all of the blobs and all of the commits. All the other relevant information is stored within the gitlet object
+ or within the serialized numbers
+ Our files are all stored by their hash value, meaning (with exception of gitlet class) that they are stored
+ in the .gitlet folder with the name of their hash value. The commits have access to all the blobs hash values
+ that they are in possession of, and the gitlet has access to all the values of the commits that have been passed
+ The hashvalues are imutable, meaning that at no point will any function in gitlet object change the contents of the
+ file meaning that the hash values will always be accurate and will not change either. This means that as long as
+ these values are stored in the gitlet directory, we will be chilling.
